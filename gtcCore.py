@@ -67,3 +67,29 @@ class Gcode(object):
 		"""Devuelve la longitud total calculada"""
 
 		return self.__longitudTotal
+
+	def parsearLinea(self, linea):
+		"""Recibe una linea del archivo y devuelve una 3-upla donde el primer elemento es el comando, el segundo elemento es otra n-upla con los argumentos y el tercer elemento es el comentario.
+		Si alguna de las partes no existe entonces el elemento correspondiente a esa parte es una cadena vacía"""
+
+		comando = ''
+		argumentos = ''
+		comentario = ''
+
+		instruccion, sep, comentario = linea.partition(';')
+
+		# Elimino los espacios al principio y al final si los hubiera
+		instruccion = instruccion.strip()
+		comentario = comentario.strip()
+
+		if instruccion != '':  # Si existe la instruccion (o sea que la linea no es un comentario toda entera)
+			instElem = instruccion.split(' ')
+
+			# La lista tiene al menos 1 elemento que es el comando, y si tiene mas son argumentos
+			comando = instElem[0]
+			if len(instElem)>1:
+				argumentos =  instElem[1:]
+
+
+		return comando, argumentos, comentario
+
