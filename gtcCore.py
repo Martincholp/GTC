@@ -15,11 +15,16 @@ class Gcode(object):
 		self.__materialEmpleado = 0.0
 		self.__longitudTotal = 0.0
 		self.__tiempoTotal = 0.0
+		self.__lineasProcesadas = 0
 
 	@property
 	def __posicionActual(self):
 	    '''Devuelve la posicion actual como una tupla'''
 	    return [self.__X, self.__Y, self.__Z]
+
+	def lineasProcesadas(self):
+		'''Devuelve la cantidad de lineas procesadas por el parser'''
+		return self.__lineasProcesadas
 	
 
 	def calcDistLineal(self, final, inicial=None):
@@ -163,11 +168,7 @@ class Gcode(object):
 
 		arch.close()
 
-		print l, " lineas procesadas"
-		print "Distancia recorrida [mm]: ", self.getLongitudTotal()
-		print "Tiempo empleado [min]: ", self.getTiempoTotal()/60
-		print "Material utilizado [mm]: ", self.getMaterialEmpleado()
-
+		self.__lineasProcesadas = l
 
 	def parsearParametros(self, listaParametros):
 		"""Devuelve un diccionario con los parámetros y valores"""
@@ -184,3 +185,7 @@ if __name__ == '__main__':
 	# Para uso como programa
 	a = Gcode(sys.argv[1])
 	a.parsearGcode()
+	print(a.lineasProcesadas(), " lineas procesadas")
+	print("Distancia recorrida [mm]: ", a.getLongitudTotal())
+	print("Tiempo empleado [min]: ", a.getTiempoTotal()/60)
+	print("Material utilizado [mm]: ", a.getMaterialEmpleado())

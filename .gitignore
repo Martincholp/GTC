@@ -142,5 +142,6 @@ Blog
 About
 
 
-# No guardar la carpeta con pruebas
+# Archivos ignorados por mi
 pruebas/
+setup.py
