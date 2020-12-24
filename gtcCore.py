@@ -12,7 +12,7 @@ class Gcode(object):
 		self.__X = None # 0.0
 		self.__Y = None # 0.0
 		self.__Z = None # 0.0
-		self.__E = None # 0.0  # Posicion del filamento
+		self.__E = 0.0  # Posicion del filamento
 		self.__materialEmpleado = 0.0
 		self.__retraccion = 0.0  # Si hay una retraccion ,primero hay que compensarla antes de sumar material como empleado
 		self.__modoExtrusorRelativo = False  # El eje extrusor tiene coordenadas relativas sin importar el modo de los otros ejes
@@ -106,6 +106,8 @@ class Gcode(object):
 
 		if not self.__modoExtrusorRelativo:  # Si val no es un valor relativo lo transformo en relativo para el calculo siguiente
 			dist = val - self.__E
+		else:
+			dist = val
 
 
 		# Siendo dist un valor relativo, continuo 
@@ -200,7 +202,7 @@ class Gcode(object):
 				if (comando == 'G4') | (comando == 'M0') | (comando == 'M1'):   # Hace una pausa por un tiempo determinado
 					if 'S' in parametros:  # Si estan definidos los segundos, toma importancia este valor sin importar P
 						self.updateTiempoTotal(float(parametros['S']))
-					else if 'P' in parametros:  # Si solo está P, entonces el valor es en milisegundos
+					elif 'P' in parametros:  # Si solo está P, entonces el valor es en milisegundos
 						self.updateTiempoTotal(float(parametros['P'])/1000)
 
 				if comando == 'G28':  # Hace homing
@@ -214,7 +216,7 @@ class Gcode(object):
 							homeCompleto = True
 
 					if home:
-						if (not ('X' in parametros) & not ('Y' in parametros) & not ('Z' in parametros)) | homeCompleto:
+						if (not('X' in parametros) and not('Y' in parametros) and not('Z' in parametros)) | homeCompleto:
 							self.__X = 0.0
 							self.__Y = 0.0
 							self.__Z = 0.0
@@ -296,5 +298,5 @@ if __name__ == '__main__':
 	a.parsearGcode()
 	print(a.lineasProcesadas(), " lineas procesadas")
 	print("Distancia recorrida [mm]: ", a.getDistanciaTotal())
-	print("Tiempo empleado [min]: ", a.getTiempoTotal()/60)
+	print("Tiempo empleado [seg]: ", a.getTiempoTotal()*60)
 	print("Material utilizado [mm]: ", a.getMaterialEmpleado())
